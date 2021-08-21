@@ -1,0 +1,22 @@
+# Ignore IDE
+.idea
+.vscode
+# Ignore everything:
+/*
+!README.md
+!.gitignore
+!.gitattributes
+!index_form.php
+# first enable then exclude
+!/local/
+/local/*
+!/local/php_interface/
+!/local/templates/
+# Except for the components directories: /local/components/bitrix/
+!/local/components/
+/local/components/*
+!/local/components/bitrix/
+# Except for the modules directories: /local/modules/recaptchav3/
+!/local/modules/
+/local/modules/*
+!/local/modules/recaptchav3/
