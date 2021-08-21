@@ -20,3 +20,7 @@
 !/local/modules/
 /local/modules/*
 !/local/modules/recaptchav3/
+#
+!/images/
+/images/*
+!/images/recaptchav3/

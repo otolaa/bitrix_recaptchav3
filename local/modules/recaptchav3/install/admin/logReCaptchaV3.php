@@ -1,0 +1,1 @@
+<?require($_SERVER["DOCUMENT_ROOT"]."/local/modules/recaptchav3/admin/logReCaptchaV3.php");?>
