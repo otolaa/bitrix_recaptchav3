@@ -1,9 +1,5 @@
-<?php
-IncludeModuleLangFile(__FILE__);
-static $MODULE_ID = 'recaptchav3';
-//
-$arClasses=array(
-    'reCaptcha'=>'classes/general/reCaptcha.php',
-);
+<?
 
-CModule::AddAutoloadClasses("recaptchav3", $arClasses);
+\Bitrix\Main\Loader::registerAutoLoadClasses("recaptchav3", [
+    '\Bitrix\ReCaptchav3\ReCaptcha'=>'lib/ReCaptcha.php',
+]);

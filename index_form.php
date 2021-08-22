@@ -6,7 +6,7 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.ph
 
 use \Bitrix\Main\Loader;
 use \Bitrix\Main\Config\Option;
-use Bitrix\Main\Context;
+use \Bitrix\Main\Context;
 
 ?>
 <!DOCTYPE html>
@@ -20,17 +20,6 @@ use Bitrix\Main\Context;
         <meta name="robots" content="noindex, nofollow">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-        <!--the styles-->
-        <style type="text/css">
-            .form-check label{ position: relative; margin-left: 30px; }
-            .form-check input[type=checkbox]{ display: none; }
-            .form-check label:before{ content: ''; position: absolute; top: 2px; left: -30px; width: 20px; height: 20px; display: block; border-radius: 4px; border: solid 1px #BBBCBD; box-shadow: inset 0px 3px 10px rgba(0,0,0,0.1); cursor: pointer; }
-            .form-check input[type=checkbox]:checked + label:after{ content: 'L'; position: absolute; top: -4px; left: -33px; width: 20px; height: 20px; display: block;
-                -ms-transform: scaleX(-1) rotate(-35deg); /* IE 9 */
-                -webkit-transform: scaleX(-1) rotate(-35deg); /* Chrome, Safari, Opera */
-                transform: scaleX(-1) rotate(-35deg);
-            }
-        </style>
     </head>
 <body>
 
@@ -68,7 +57,7 @@ use Bitrix\Main\Context;
         $sid = 'main_f'; // slug in form
         $get_form = [
                 'sid'=>$sid,
-                'tokenKey'=>reCaptcha::tokenKey(),
+                'tokenKey'=>\Bitrix\ReCaptchav3\ReCaptcha::tokenKey(),
                 'recaptchaResponse'=>'recaptcha_'.$sid,
         ];
 
@@ -85,7 +74,7 @@ use Bitrix\Main\Context;
         $get['recaptcha_'.$sid] = $request->getPost('recaptcha_'.$sid);
         if ($get['method'] == "POST" && is_set($get['recaptcha_'.$sid]) && strlen($get['recaptcha_'.$sid]))
         {
-            $get["recaptcha"] = reCaptcha::requestPostReCaptcha($get['recaptcha_'.$sid], $form_id, $sid);
+            $get["recaptcha"] = \Bitrix\ReCaptchav3\ReCaptcha::requestPostReCaptcha($get['recaptcha_'.$sid], $form_id, $sid);
             if ($get["recaptcha"]['success'] == 'N') {
                 $error['RECAPTCHA'] = Option::get("recaptchav3", "RECAPTCHA_ERROR", "Y");
             } elseif ($get["recaptcha"]['success'] == 'S') {
@@ -101,7 +90,7 @@ use Bitrix\Main\Context;
             <div class="alert alert-danger" role="alert"><?=implode('<br>', $error)?></div>
         <? } ?>
 
-        <form role="form" action="<?=POST_FORM_ACTION_URI?>" method="POST" novalidate="" class="row" id="send_question" name="send_question">
+        <form role="form" action="<?=POST_FORM_ACTION_URI?>" method="POST" class="row" id="send_question" name="send_question">
             <div class="form-group col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
                 <label><?=$frm[0]['title']?></label>
                 <input type="<?=$frm[0]['type']?>" class="form-control form-control-lg" placeholder="<?=$frm[0]['title']?>" name="<?=$frm[0]['name']?>" <?=($frm[0]['required']=='Y'?'required':'')?>>
@@ -117,14 +106,16 @@ use Bitrix\Main\Context;
                 <textarea class="form-control form-control-lg" rows="2" name="<?=$frm[2]['name']?>" placeholder="<?=$frm[2]['title']?>" <?=($frm[2]['required']=='Y'?'required':'')?>></textarea>
             </div>
 
-            <div class="form-group form-check col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                <input class="form-check-input" type="checkbox" name="remember" value="Y" required="" id="remember">
-                <label class="form-check-label" for="remember">Согласен на обработку персональных данных</label>
+            <div class="form-group col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                <div class="custom-checkbox ml-4">
+                <input class="form-check-input custom-control-input" type="checkbox" name="remember" value="Y" required="" id="remember">
+                <label class="form-check-label custom-control-label" for="remember">Согласен на обработку персональных данных</label>
+                </div>
             </div>
             <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 text-right">
                 <!--// this hidden input for recaptcha -->
                 <input type="hidden" id="<?=$get_form['recaptchaResponse']?>" name="<?=$get_form['recaptchaResponse']?>" value="">
-                <button type="submit" class="btn btn-secondary btn-lg" disabled
+                <button type="submit" class="btn btn-primary btn-lg" disabled
                         data-callback="onSubmit"
                         data-badge="inline"
                         data-sid="<?=$get_form['sid']?>"
@@ -148,7 +139,7 @@ $(document).ready( function() {
     /* the remember */
     $('input[name="remember"]').on('change', function(event) {
         event.preventDefault();
-        var $bs = $(this).parent().parent().find('button[type="submit"]');
+        var $bs = $(this).parent().parent().parent().find('button[type="submit"]');
         if(!$(this).prop("checked")){
             $($bs).attr('disabled','disabled');
         }else{
@@ -156,24 +147,19 @@ $(document).ready( function() {
         }
         return false;
     });
-});
-/* add recaptcha for google */
-$(window).on("load", function() {
-    /* the code will be executed when the page is fully loaded, including all frames, objects and images */
-    setTimeout(function() {
-        var $sub = $('#send_question').find("button[type='submit']"), $tokenKey = $sub.data('tokenkey'), $sid = $sub.data('sid');
-        $.getScript( "https://www.google.com/recaptcha/api.js?render="+$tokenKey)
-            .done(function( script, textStatus ) {
-                if(typeof grecaptcha !== "undefined") {
-                    grecaptcha.ready(function () {
-                        grecaptcha.execute($tokenKey, {action: $sid}).then(function (token) {
-                            var recaptchaResponse = document.getElementById('recaptcha_'+$sid);
-                            recaptchaResponse.value = token;
-                        });
+    /* add recaptcha for google */
+    var $sub = $('#send_question').find("button[type='submit']"), $tokenKey = $sub.data('tokenkey'), $sid = $sub.data('sid');
+    $.getScript( "https://www.google.com/recaptcha/api.js?render="+$tokenKey)
+        .done(function( script, textStatus ) {
+            if(typeof grecaptcha !== "undefined") {
+                grecaptcha.ready(function () {
+                    grecaptcha.execute($tokenKey, {action: $sid}).then(function (token) {
+                        var recaptchaResponse = document.getElementById('recaptcha_'+$sid);
+                        recaptchaResponse.value = token;
                     });
-                }
-            });
-    }, 10);
+                });
+            }
+        });
 });
 </script>
 </body>

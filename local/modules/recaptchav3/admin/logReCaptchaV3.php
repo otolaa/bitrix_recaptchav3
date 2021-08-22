@@ -6,7 +6,7 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/local/modules/recaptchav3/prolog.php");
 // подключим языковой файл
 IncludeModuleLangFile(__FILE__);
 //
-if(!CModule::IncludeModule("recaptchav3")) return;
+if(!\Bitrix\Main\Loader::includeModule("recaptchav3")) return;
 
 // получим права доступа текущего пользователя на модуль
 $POST_RIGHT = $APPLICATION->GetGroupRight("recaptchav3");
@@ -141,7 +141,7 @@ if(($arID = $lAdmin->GroupAction()) && $POST_RIGHT=="W")
 
 // выберем список параметров
 $arFilter = array_filter($arFilter, 'strlen');  // удаляем Null
-$rsData = reCaptcha::GetList($arFilter, array($by=>$order), $bShowAll = false);
+$rsData = \Bitrix\ReCaptchav3\ReCaptcha::GetList($arFilter, [$by=>$order], $bShowAll = false);
 
 // преобразуем список в экземпляр класса CAdminResult
 $rsData = new CAdminResult($rsData, $sTableID);
@@ -154,42 +154,13 @@ $lAdmin->NavText($rsData->GetNavPrint("Параметры"));
 
 /* ПОДГОТОВКА СПИСКА К ВЫВОДУ */
 $lAdmin->AddHeaders([
-    array(  "id"    =>"ID",
-        "content"  =>"ID",
-        "sort"    =>"ID",
-        "align"    =>"right",
-        "default"  =>true,
-    ),
-    array("id" =>"TIMESTAMP_X",
-        "content"  =>"Дата",
-        "sort"    =>"TIMESTAMP_X",
-        "default"  =>true,
-    ),
-    array("id"   =>"FORM_ID",
-        "content"  =>"ID формы",
-        "sort"   =>"FORM_ID",
-        "default"  =>true,
-    ),
-    array("id"   =>"FORM_SID",
-        "content"  =>"SID формы",
-        "sort"   =>"FORM_SID",
-        "default"  =>true,
-    ),
-    array("id"   =>"STATUS",
-        "content"  =>"Проверка (Y/N/S)",
-        "sort"   =>"STATUS",
-        "default"  =>true,
-    ),
-    array("id"   =>"USER_IP",
-        "content"  =>"IP User",
-        "sort"   =>"USER_IP",
-        "default"  =>true,
-    ),
-    array("id"   =>"RECAPTCHA",
-        "content"  =>"Ответ",
-        "sort"   =>"RECAPTCHA",
-        "default"  =>true,
-    ),
+    ["id"=>"ID", "content"=>"ID", "sort"=>"ID", "align"=>"right", "default"=>true],
+    ["id"=>"TIMESTAMP_X", "content"=>"Дата", "sort"=>"TIMESTAMP_X", "default"=>true],
+    ["id"=>"FORM_ID", "content"=>"ID формы", "sort"=>"FORM_ID", "default"=>true],
+    ["id"=>"FORM_SID","content"=>"SID формы","sort"=>"FORM_SID","default"=>true],
+    ["id"=>"STATUS", "content"=>"Проверка (Y/N/S)", "sort"=>"STATUS","default"=>true],
+    ["id"=>"USER_IP", "content"=>"IP User", "sort"=>"USER_IP", "default"=>true],
+    ["id"=>"RECAPTCHA", "content"=>"Ответ", "sort"=>"RECAPTCHA", "default"=>true],
 ]);
 
 // вывод

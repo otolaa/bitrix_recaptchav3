@@ -1,8 +1,13 @@
 <?
+namespace Bitrix\ReCaptchav3;
 
 use \Bitrix\Main\Config\Option;
 
-class reCaptcha
+/**
+ * Class ReCaptcha
+ * @package Bitrix\ReCaptchav3
+ */
+class ReCaptcha
 {
 
     static $MODULE_ID = "recaptchav3";
