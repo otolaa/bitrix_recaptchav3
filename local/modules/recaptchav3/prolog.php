@@ -1,3 +1,3 @@
 <?
-IncludeModuleLangFile(__FILE__);
+\Bitrix\Main\Localization\Loc::loadMessages(__FILE__);
 define("ADMIN_MODULE_NAME", "recaptchav3");
