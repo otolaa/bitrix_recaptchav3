@@ -1,9 +1,12 @@
 <?php
-IncludeModuleLangFile(__FILE__);
+use \Bitrix\Main\Localization\Loc;
+use \Bitrix\Main\Loader;
+
+loc::loadMessages(__FILE__);
 
 if($APPLICATION->GetGroupRight("recaptchav3")>"D"){
 
-    require_once($_SERVER["DOCUMENT_ROOT"]."/local/modules/recaptchav3/prolog.php");
+    require_once(Loader::getLocal("/modules/recaptchav3/prolog.php"));
 
     $aMenu = array(
         "parent_menu" => "global_menu_services",

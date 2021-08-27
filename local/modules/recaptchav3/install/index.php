@@ -1,7 +1,9 @@
 <?
-IncludeModuleLangFile(__FILE__); // Гугл reCaptchaV3
+use \Bitrix\Main\Localization\Loc;
+use \Bitrix\Main\Loader;
 
-if(class_exists("recaptchav3")) return;
+loc::loadMessages(__FILE__);
+
 Class recaptchav3 extends CModule
 {
     var $MODULE_ID = "recaptchav3";
@@ -13,7 +15,7 @@ Class recaptchav3 extends CModule
 
     function recaptchav3()
     {
-        $arModuleVersion = array();
+        $arModuleVersion = [];
 
         $path = str_replace("\\", "/", __FILE__);
         $path = substr($path, 0, strlen($path) - strlen("/index.php"));
@@ -25,6 +27,11 @@ Class recaptchav3 extends CModule
         }
         $this->MODULE_NAME = GetMessage("acs_module_name");
         $this->MODULE_DESCRIPTION = GetMessage("acs_module_desc");
+    }
+
+    function getPageLocal($page)
+    {
+        return str_replace('index.php', $page, Loader::getLocal('modules/'.$this->MODULE_ID.'/install/index.php'));
     }
 
     function InstallDB($arParams = array())
@@ -75,13 +82,13 @@ Class recaptchav3 extends CModule
 
     function InstallFiles($arParams = array())
     {
-        CopyDirFiles($_SERVER["DOCUMENT_ROOT"]."/local/modules/recaptchav3/install/admin/", $_SERVER["DOCUMENT_ROOT"]."/bitrix/admin");
+        CopyDirFiles($this->getPageLocal('admin'), $_SERVER["DOCUMENT_ROOT"]."/bitrix/admin");
         return true;
     }
 
     function UnInstallFiles()
     {
-        DeleteDirFiles($_SERVER["DOCUMENT_ROOT"]."/local/modules/recaptchav3/install/admin/", $_SERVER["DOCUMENT_ROOT"]."/bitrix/admin");
+        DeleteDirFiles($this->getPageLocal('admin'), $_SERVER["DOCUMENT_ROOT"]."/bitrix/admin");
         return true;
     }
 
@@ -92,7 +99,7 @@ Class recaptchav3 extends CModule
         RegisterModule($this->MODULE_ID);
         $this->InstallDB();
         $this->InstallFiles();
-        $APPLICATION->IncludeAdminFile("Установка модуля ".$this->MODULE_ID, $DOCUMENT_ROOT."/local/modules/".$this->MODULE_ID."/install/step.php");
+        $APPLICATION->IncludeAdminFile("Установка модуля ".$this->MODULE_ID, $this->getPageLocal('step.php'));
         return true;
     }
 
@@ -103,7 +110,7 @@ Class recaptchav3 extends CModule
         UnRegisterModule($this->MODULE_ID);
         $this->UnInstallDB();
         $this->UnInstallFiles();
-        $APPLICATION->IncludeAdminFile("Деинсталляция модуля ".$this->MODULE_ID, $DOCUMENT_ROOT."/local/modules/".$this->MODULE_ID."/install/unstep.php");
+        $APPLICATION->IncludeAdminFile("Деинсталляция модуля ".$this->MODULE_ID, $this->getPageLocal('unstep.php'));
         return true;
     }
 }

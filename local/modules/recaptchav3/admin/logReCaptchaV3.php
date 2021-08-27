@@ -1,12 +1,15 @@
-<?
+<?php
+use \Bitrix\Main\Localization\Loc;
+use \Bitrix\Main\Loader;
+
 require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_admin_before.php"); // первый общий пролог
-require_once($_SERVER["DOCUMENT_ROOT"]."/local/modules/recaptchav3/include.php"); // инициализация модуля
-require_once($_SERVER["DOCUMENT_ROOT"]."/local/modules/recaptchav3/prolog.php"); // пролог модуля
+require_once(Loader::getLocal("modules/recaptchav3/include.php")); // инициализация модуля
+require_once(Loader::getLocal("/modules/recaptchav3/prolog.php")); // пролог модуля
 
 // подключим языковой файл
-IncludeModuleLangFile(__FILE__);
+Loc::loadMessages(__FILE__);
 //
-if(!\Bitrix\Main\Loader::includeModule("recaptchav3")) return;
+if(!Loader::includeModule("recaptchav3")) return;
 
 // получим права доступа текущего пользователя на модуль
 $POST_RIGHT = $APPLICATION->GetGroupRight("recaptchav3");
