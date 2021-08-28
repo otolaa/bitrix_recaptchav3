@@ -2,6 +2,7 @@
 namespace Local\ReCaptchaV3;
 
 use \Bitrix\Main\Config\Option;
+use \Local\ReCaptchaV3\Recaptchav3Table;
 
 /**
  * Class ReCaptcha
@@ -64,10 +65,10 @@ class ReCaptcha
         //
         if ($recaptcha_response) {
             // Make and decode POST request
-            $data = array(
+            $data = [
                 'secret' => $recaptcha_secret,
                 'response' => $recaptcha_response
-            );
+            ];
             $verify = curl_init();
             curl_setopt($verify, CURLOPT_URL, $recaptcha_url);
             curl_setopt($verify, CURLOPT_POST, true);
@@ -95,16 +96,16 @@ class ReCaptcha
             $arJson['ip'] = self::getRealUserIp();
 
             // here goes the logging algorithm
-            if (self::getLog()) {
-                self::addLog($arJson);
-            }
+            if (self::getLog()) self::addLog($arJson);
+
         }
 
         return (count($arJson)?$arJson:false);
     }
 
-    public static function getRealUserIp(){
-        switch(true){
+    public static function getRealUserIp()
+    {
+        switch (true) {
             case (!empty($_SERVER['HTTP_X_REAL_IP'])) : return $_SERVER['HTTP_X_REAL_IP'];
             case (!empty($_SERVER['HTTP_CLIENT_IP'])) : return $_SERVER['HTTP_CLIENT_IP'];
             case (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) : return $_SERVER['HTTP_X_FORWARDED_FOR'];
@@ -114,48 +115,26 @@ class ReCaptcha
 
     public static function addLog($arJson)
     {
-        global $DB;
-        $DB->StartTransaction();
-        $arFields = [
-            "TIMESTAMP_X" => $DB->GetNowFunction(),
-            "FORM_ID" => "'".trim($arJson['fid'])."'",
-            "FORM_SID" => "'".trim($arJson['sid'])."'",
-            "STATUS" => "'".trim($arJson['success'])."'",
-            "USER_IP" => "'".trim($arJson['ip'])."'",
-            "RECAPTCHA" => "'".json_encode($arJson['recaptcha'], JSON_UNESCAPED_UNICODE)."'",
-        ];
-        $ID = $DB->Insert("b_recaptchav3", $arFields, false, false, false, true);
-        $DB->Commit();
-        return $ID;
+        $result = Recaptchav3Table::add([
+            "FORM_ID" => trim($arJson['fid']),
+            "FORM_SID" => trim($arJson['sid']),
+            "STATUS" => trim($arJson['success']),
+            "USER_IP" => trim($arJson['ip']),
+            "RECAPTCHA" => json_encode($arJson['recaptcha'], JSON_UNESCAPED_UNICODE),
+        ]);
+
+        if ($result->isSuccess()) {
+            return $result->getId(); // id
+        } else return false;
     }
 
-    public static function GetList($arFilter = array(), $arSort = array('ID' => 'ASC'), $bShowAll = false)
+    public static function GetList($arFilter = [], $arSort = ['ID' => 'ASC'], $bShowAll = false)
     {
-        global $DB;
-
-        $where = [];
-        if (count($arFilter)>0) {
-            foreach ($arFilter as $k=>$vk) {
-                if($k=="FORM_SID"){
-                    $where[] = "rec.`" . $k . "` LIKE '%" . $vk . "%'";
-                }else {
-                    $where[] = "rec.`" . $k . "` = '" . $vk . "'";
-                }
-            }
-        }
-
-        $arSqlOrder = array();
-        if (count($arSort)>0) {
-            foreach ($arSort as $k=>$srt) {
-                $arSqlOrder[] = "rec.`".$k."`"." ".$srt;
-            }
-        }
-
-        $SQL = 'SELECT rec.*
-                FROM `b_recaptchav3` as rec
-                '.(count($where)>0 ? ' WHERE '.implode(' AND ', $where):'')
-            .(count($arSqlOrder)>0 ? ' ORDER BY '.implode(', ', $arSqlOrder):'');
-        $dbResult = $DB->Query($SQL, true);
+        $dbResult = Recaptchav3Table::getList([
+            'select' => ['*'],
+            'order' => $arSort,
+            'filter' => $arFilter
+        ]);
 
         return $dbResult;
     }

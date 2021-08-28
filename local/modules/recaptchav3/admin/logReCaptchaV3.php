@@ -1,6 +1,7 @@
 <?php
 use \Bitrix\Main\Localization\Loc;
 use \Bitrix\Main\Loader;
+use \Local\ReCaptchaV3\Recaptchav3Table;
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_admin_before.php"); // первый общий пролог
 require_once(Loader::getLocal("modules/recaptchav3/include.php")); // инициализация модуля
@@ -51,9 +52,9 @@ $lAdmin->InitFilter($FilterArr);
 if (CheckFilter())
 {
     // создадим массив фильтрации для выборки
-    $arFilter = Array(
+    $arFilter = [
         "ID"    => ($find!="" && $find_type == "id"? $find:$find_ID),
-    );
+    ];
 }
 
 /*  КОНЕЦ ФИЛЬТРА */
@@ -87,15 +88,12 @@ if(($arID = $lAdmin->GroupAction()) && $POST_RIGHT=="W")
     // если выбрано "Для всех элементов"
     if($_REQUEST['action_target']=='selected')
     {
-        /**/
-        global $DB;
-        $DB->StartTransaction();
-        $SQL = "DELETE FROM `b_recaptchav3`";
-        $dbResult = $DB->Query($SQL, true);
-        $DB->Commit();
-        if(!$dbResult){
+        // deleteAll
+        $connection = \Bitrix\Main\Application::getConnection();
+        $dbResult = $connection->truncateTable(Recaptchav3Table::getTableName());
+        if (!$dbResult) {
             $lAdmin->AddGroupError("Ошибка удаления");
-        }else{
+        } else {
             CAdminMessage::ShowMessage(array("MESSAGE"=>"Удалены ", "TYPE"=>"OK"));
         }
     }
@@ -111,18 +109,12 @@ if(($arID = $lAdmin->GroupAction()) && $POST_RIGHT=="W")
         {
             // удаление
             case "delete":
-                /**/
-                global $DB;
-                $DB->StartTransaction();
-                $SQL = "DELETE FROM `b_recaptchav3` WHERE `b_recaptchav3`.`ID` =  ".$ID;
-                $dbResult = $DB->Query($SQL, true);
-                $DB->Commit();
-                if(!$dbResult){
+                $result = Recaptchav3Table::delete($ID);
+                if (!$result->isSuccess()) {
                     $lAdmin->AddGroupError("Ошибка удаления", $ID);
-                }else{
+                } else {
                     CAdminMessage::ShowMessage(array("MESSAGE"=>"Удалено ID ".$ID, "TYPE"=>"OK"));
                 }
-                //$lAdmin->AddGroupError("ОПЕРАЦИИ НАД ЭЛЕМЕНТАМИ НЕ ПРЕДУСМОТРЕННЫ", $ID);
                 break;
 
             // активация/деактивация
@@ -132,13 +124,11 @@ if(($arID = $lAdmin->GroupAction()) && $POST_RIGHT=="W")
                 // обновляем и т.д.
                 $lAdmin->AddGroupError("ОПЕРАЦИИ НАД ЭЛЕМЕНТАМИ НЕ ПРЕДУСМОТРЕННЫ", $ID);
                 break;
-            //  модерация
-            /**/
         }
     }
 } // end GroupAction
 
-/* Конец Обработки действия над элементами в таблитце */
+/* Конец Обработки действия над элементами */
 
 /* ВЫБОРКА ЭЛЕМЕНТОВ СПИСКА */
 
