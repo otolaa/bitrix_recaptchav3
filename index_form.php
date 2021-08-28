@@ -57,7 +57,7 @@ use \Bitrix\Main\Context;
         $sid = 'main_f'; // slug in form
         $get_form = [
                 'sid'=>$sid,
-                'tokenKey'=>\Bitrix\ReCaptchav3\ReCaptcha::tokenKey(),
+                'tokenKey'=>\Local\ReCaptchaV3\ReCaptcha::tokenKey(),
                 'recaptchaResponse'=>'recaptcha_'.$sid,
         ];
 
@@ -74,7 +74,7 @@ use \Bitrix\Main\Context;
         $get['recaptcha_'.$sid] = $request->getPost('recaptcha_'.$sid);
         if ($get['method'] == "POST" && is_set($get['recaptcha_'.$sid]) && strlen($get['recaptcha_'.$sid]))
         {
-            $get["recaptcha"] = \Bitrix\ReCaptchav3\ReCaptcha::requestPostReCaptcha($get['recaptcha_'.$sid], $form_id, $sid);
+            $get["recaptcha"] = \Local\ReCaptchaV3\ReCaptcha::requestPostReCaptcha($get['recaptcha_'.$sid], $form_id, $sid);
             if ($get["recaptcha"]['success'] == 'N') {
                 $error['RECAPTCHA'] = Option::get("recaptchav3", "RECAPTCHA_ERROR", "Y");
             } elseif ($get["recaptcha"]['success'] == 'S') {

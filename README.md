@@ -9,7 +9,7 @@
 
 ```php
 // https://www.google.com/recaptcha/api/siteverify
-\Bitrix\ReCaptchav3\ReCaptcha::requestPostReCaptcha($recaptcha_response = Null, $ID = Null, $SID = Null);
+\Local\ReCaptchaV3\ReCaptcha::requestPostReCaptcha($recaptcha_response = Null, $ID = Null, $SID = Null);
 ```
 
 ![reCAPTCHA v3 module](https://github.com/otolaa/bitrix_recaptchav3/blob/master/images/recaptchav3/re_2.png "reCAPTCHA v3 module")  

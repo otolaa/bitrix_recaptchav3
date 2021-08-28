@@ -1,11 +1,11 @@
 <?
-namespace Bitrix\ReCaptchav3;
+namespace Local\ReCaptchaV3;
 
 use \Bitrix\Main\Config\Option;
 
 /**
  * Class ReCaptcha
- * @package Bitrix\ReCaptchav3
+ * @package Local\ReCaptchaV3
  */
 class ReCaptcha
 {

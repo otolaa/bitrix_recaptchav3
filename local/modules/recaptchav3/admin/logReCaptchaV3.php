@@ -144,7 +144,7 @@ if(($arID = $lAdmin->GroupAction()) && $POST_RIGHT=="W")
 
 // выберем список параметров
 $arFilter = array_filter($arFilter, 'strlen');  // удаляем Null
-$rsData = \Bitrix\ReCaptchav3\ReCaptcha::GetList($arFilter, [$by=>$order], $bShowAll = false);
+$rsData = \Local\ReCaptchaV3\ReCaptcha::GetList($arFilter, [$by=>$order], $bShowAll = false);
 
 // преобразуем список в экземпляр класса CAdminResult
 $rsData = new CAdminResult($rsData, $sTableID);
