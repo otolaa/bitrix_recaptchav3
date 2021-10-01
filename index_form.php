@@ -1,6 +1,6 @@
 <? //
-define("TITLE_HEADER", "The module reCAPTCHAv3 for Bitrix");
-define("TITLE_HEADER_SMALL", "reCAPTCHAv3");
+define("TITLE_HEADER", "The module reCAPTCHA.v3 for Bitrix");
+define("TITLE_HEADER_SMALL", "reCAPTCHA.v3");
 
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
 
@@ -44,20 +44,20 @@ use \Bitrix\Main\Context;
         <div class="container">
             <h4 class="display-4 tiser-h"><?=TITLE_HEADER_SMALL?></h4>
             <div class="alert alert-secondary" role="alert">
-                / the module reCAPTCHAv3 for Bitrix<br>
-                / tokenKey => <?=Option::get("recaptchav3", "RECAPTCHA_TOKEN_KEY", "")?>
+                / the module reCAPTCHA.v3 for Bitrix<br>
+                / tokenKey => <?=Option::get("recaptcha.v3", "RECAPTCHA_TOKEN_KEY", "")?>
             </div>
         </div>
     </div><!--/jumbotron-->
 
     <div class="container">
     <? // return form
-    if (Loader::includeModule('recaptchav3')) :
+    if (Loader::includeModule('recaptcha.v3')) :
         $form_id = 2; // number in form
         $sid = 'main_f'; // slug in form
         $get_form = [
                 'sid'=>$sid,
-                'tokenKey'=>\Local\ReCaptchaV3\ReCaptcha::tokenKey(),
+                'tokenKey'=>\ReCaptcha\V3\Api::tokenKey(),
                 'recaptchaResponse'=>'recaptcha_'.$sid,
         ];
 
@@ -74,7 +74,7 @@ use \Bitrix\Main\Context;
         $get['recaptcha_'.$sid] = $request->getPost('recaptcha_'.$sid);
         if ($get['method'] == "POST" && is_set($get['recaptcha_'.$sid]) && strlen($get['recaptcha_'.$sid]))
         {
-            $get["recaptcha"] = \Local\ReCaptchaV3\ReCaptcha::requestPostReCaptcha($get['recaptcha_'.$sid], $form_id, $sid);
+            $get["recaptcha"] = \ReCaptcha\V3\Api::requestPostReCaptcha($get['recaptcha_'.$sid], $form_id, $sid);
             if ($get["recaptcha"]['success'] == 'N') {
                 $error['RECAPTCHA'] = Option::get("recaptchav3", "RECAPTCHA_ERROR", "Y");
             } elseif ($get["recaptcha"]['success'] == 'S') {
@@ -83,7 +83,7 @@ use \Bitrix\Main\Context;
         } ?>
 
         <div class="alert alert-primary" role="alert">
-            Пример формы с реализацей reCAPTCHAv3 <? if ($get['method'] == "POST" && count($error) == 0) : ?><strong>сообщение отправленно</strong><? endif; ?>
+            Пример формы с реализацей reCAPTCHA.v3 <? if ($get['method'] == "POST" && count($error) == 0) : ?><strong>сообщение отправленно</strong><? endif; ?>
         </div>
 
         <? if (count($error)) { ?>
