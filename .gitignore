@@ -19,7 +19,7 @@
 # Except for the modules directories: /local/modules/recaptchav3/
 !/local/modules/
 /local/modules/*
-!/local/modules/recaptchav3/
+!/local/modules/recaptcha.v3/
 #
 !/images/
 /images/*
