@@ -80,12 +80,14 @@ Class recaptcha_v3 extends CModule
     public function InstallFiles($arParams = array())
     {
         CopyDirFiles($this->getPageLocal('admin'), $_SERVER["DOCUMENT_ROOT"]."/bitrix/admin");
+        CopyDirFiles($this->getPageLocal('pages/index_form.php'), $_SERVER["DOCUMENT_ROOT"]."/index_form.php");
         return true;
     }
 
     public function UnInstallFiles()
     {
         DeleteDirFiles($this->getPageLocal('admin'), $_SERVER["DOCUMENT_ROOT"]."/bitrix/admin");
+        DeleteDirFiles($this->getPageLocal('pages/index_form.php'), $_SERVER["DOCUMENT_ROOT"]."/index_form.php");
         return true;
     }
 
