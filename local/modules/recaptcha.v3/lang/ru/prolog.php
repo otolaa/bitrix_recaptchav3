@@ -1,3 +1,3 @@
 <?
-//$MESS ['subscr_prolog_title'] = "Модуль";
+$MESS ['v3_module_code'] = "recaptcha.v3";
 ?>

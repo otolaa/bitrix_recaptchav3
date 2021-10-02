@@ -1,6 +1,7 @@
 <?
 use \Bitrix\Main\Localization\Loc;
 use \Bitrix\Main\Loader;
+use \Bitrix\Main\Config\Option;
 
 loc::loadMessages(__FILE__);
 
@@ -11,7 +12,8 @@ Class recaptcha_v3 extends CModule
     var $MODULE_VERSION_DATE;
     var $MODULE_NAME;
     var $MODULE_DESCRIPTION;
-    var $MODULE_CSS;
+    var $PARTNER_NAME;
+    var $PARTNER_URI;
 
     public function __construct()
     {
@@ -19,10 +21,10 @@ Class recaptcha_v3 extends CModule
         include(__DIR__.'/version.php');
         $this->MODULE_VERSION = $arModuleVersion["VERSION"];
         $this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
-        $this->MODULE_NAME = GetMessage("v3_module_name");
-        $this->MODULE_DESCRIPTION = GetMessage("v3_module_desc");
+        $this->MODULE_NAME = Loc::getMessage("v3_module_name");
+        $this->MODULE_DESCRIPTION = Loc::getMessage("v3_module_desc");
         $this->PARTNER_NAME = 'saitovik';
-        $this->PARTNER_URI = 'http://saitovik.com/';
+        $this->PARTNER_URI = 'http://saitovik.com';
     }
 
     public function getPageLocal($page)
@@ -94,6 +96,11 @@ Class recaptcha_v3 extends CModule
         \Bitrix\Main\ModuleManager::registerModule($this->MODULE_ID);
         $this->InstallDB();
         $this->InstallFiles();
+        Option::set($this->MODULE_ID, 'RECAPTCHA_POLITICS', Loc::getMessage('RECAPTCHA_POLITICS'));
+        Option::set($this->MODULE_ID, 'RECAPTCHA_ERROR', Loc::getMessage('RECAPTCHA_ERROR'));
+        Option::set($this->MODULE_ID, 'RECAPTCHA_ERROR_SCORE', Loc::getMessage('RECAPTCHA_ERROR_SCORE'));
+        Option::set($this->MODULE_ID, 'RECAPTCHA_SCORE', '0.5');
+        Option::set($this->MODULE_ID, 'RECAPTCHA_LOG', 'Y');
         $APPLICATION->IncludeAdminFile("Установка модуля ".$this->MODULE_ID, $this->getPageLocal('step.php'));
         return true;
     }
@@ -105,6 +112,7 @@ Class recaptcha_v3 extends CModule
         \Bitrix\Main\ModuleManager::unRegisterModule($this->MODULE_ID);
         $this->UnInstallDB();
         $this->UnInstallFiles();
+        Option::delete($this->MODULE_ID); // Will remove all module variables
         $APPLICATION->IncludeAdminFile("Деинсталляция модуля ".$this->MODULE_ID, $this->getPageLocal('unstep.php'));
         return true;
     }

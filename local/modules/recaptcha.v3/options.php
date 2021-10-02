@@ -7,19 +7,19 @@ $RIGHT = $APPLICATION->GetGroupRight($module_id);
 if($RIGHT >= "R") :
 //
 $arAllOptions = [
-    array("RECAPTCHA_TOKEN_KEY", "Открытый ключ reCAPTCHA", array("text",50), ""),
-    array("RECAPTCHA_TOKEN_SECRET_KEY", "Закрытый ключ reCAPTCHA", array("text",50), ""),
-    array("RECAPTCHA_POLITICS", "Политика конфединцальности", array("textarea",5,50), 'Этот сайт защищен reCAPTCHA и применяются <a href="https://policies.google.com/privacy" rel="nofollow">Политика конфиденциальности</a> и <a href="https://policies.google.com/terms" rel="nofollow">Условия обслуживания</a> Google.'),
-    array("RECAPTCHA_ERROR", "Сообщение об ошибке", array("textarea",2,50), 'Вопрос не отправлен, так как система определила Вас как робота. Задайте вопрос по телефону, указанному в контактах.'),
-    array("RECAPTCHA_ERROR_SCORE", "Сообщение об недоступности", array("textarea",2,50), 'Проверка завершилась с ошибкой, попробуйте еще раз.'),
-    array("RECAPTCHA_SCORE", "Оценка сравнения бот или человек", array("text",10), "0.5"),
-    array("RECAPTCHA_LOG", "Записывать лог", array("checkbox",10), ""),
-    array('RECAPTCHA_CURLOPT_PROXY', 'CURL PROXY для API', array('text',50), ''),
+    ["RECAPTCHA_TOKEN_KEY", "Открытый ключ reCAPTCHA", ["text",50], ""],
+    ["RECAPTCHA_TOKEN_SECRET_KEY", "Закрытый ключ reCAPTCHA", ["text",50], ""],
+    ["RECAPTCHA_POLITICS", "Политика конфединцальности", ["textarea",5,50], ''],
+    ["RECAPTCHA_ERROR", "Сообщение об ошибке", ["textarea",2,50], ''],
+    ["RECAPTCHA_ERROR_SCORE", "Сообщение об недоступности", ["textarea",2,50], ''],
+    ["RECAPTCHA_SCORE", "Оценка сравнения бот или человек", ["text",10], ""],
+    ["RECAPTCHA_LOG", "Записывать лог", ["checkbox",10], ""],
+    ['RECAPTCHA_CURLOPT_PROXY', 'CURL PROXY для API', ['text',50], ''],
 ];
 
 $aTabs = [
-    array("DIV" => "edit1", "TAB" => GetMessage("MAIN_TAB_SET"), "ICON" => "perfmon_settings", "TITLE" => GetMessage("MAIN_TAB_TITLE_SET")),
-    array("DIV" => "edit2", "TAB" => GetMessage("MAIN_TAB_RIGHTS"), "ICON" => "perfmon_settings", "TITLE" => GetMessage("MAIN_TAB_TITLE_RIGHTS")),
+    ["DIV" => "edit1", "TAB" => GetMessage("MAIN_TAB_SET"), "ICON" => "perfmon_settings", "TITLE" => GetMessage("MAIN_TAB_TITLE_SET")],
+    ["DIV" => "edit2", "TAB" => GetMessage("MAIN_TAB_RIGHTS"), "ICON" => "perfmon_settings", "TITLE" => GetMessage("MAIN_TAB_TITLE_RIGHTS")],
 ];
 
 $tabControl = new CAdminTabControl("tabControl", $aTabs);

@@ -1,3 +1,3 @@
 <?
-//$MESS ['POST_TEXT'] = "текст";
+$MESS ['v3_module_code'] = "recaptcha.v3";
 ?>
