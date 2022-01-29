@@ -79,9 +79,9 @@ use \Bitrix\Main\Context;
             $get["recaptcha"] = \ReCaptcha\V3\Api::requestPostReCaptcha($get['recaptcha_'.$sid], $form_id, $sid);
             // AddMessage2Log("\n".var_export($get["recaptcha"], true). " \n \r\n ", "recaptcha");
             if ($get["recaptcha"]['success'] == 'N') {
-                $error['RECAPTCHA'] = Option::get("recaptchav3", "RECAPTCHA_ERROR", "Y");
+                $error['RECAPTCHA'] = Option::get("recaptcha.v3", "RECAPTCHA_ERROR", "Y");
             } elseif ($get["recaptcha"]['success'] == 'S') {
-                $error['RECAPTCHA'] = Option::get("recaptchav3", "RECAPTCHA_ERROR_SCORE", "Y");
+                $error['RECAPTCHA'] = Option::get("recaptcha.v3", "RECAPTCHA_ERROR_SCORE", "Y");
             }
         } ?>
 

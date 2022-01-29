@@ -134,16 +134,22 @@ if(($arID = $lAdmin->GroupAction()) && $POST_RIGHT=="W")
 
 // выберем список параметров
 $arFilter = array_filter($arFilter, 'strlen');  // удаляем Null
-$rsData = \ReCaptcha\V3\Api::GetList($arFilter, [$by=>$order], $bShowAll = false);
+$nav = new \Bitrix\Main\UI\AdminPageNavigation("v3-log");
+$rsData = Recaptchav3Table::getList([
+    'select' => ['*'],
+    'order' => [$by=>$order],
+    'count_total' => true,
+    'filter' => $arFilter,
+    'offset' => $nav->getOffset(),
+    'limit' => $nav->getLimit(),
+]);
+$nav->setRecordCount($rsData->getCount());
 
 // преобразуем список в экземпляр класса CAdminResult
 $rsData = new CAdminResult($rsData, $sTableID);
 
 // аналогично CDBResult инициализируем постраничную навигацию.
-$rsData->NavStart();
-
-// отправим вывод переключателя страниц в основной объект $lAdmin
-$lAdmin->NavText($rsData->GetNavPrint("Параметры"));
+$lAdmin->setNavigation($nav, "Логирование");
 
 /* ПОДГОТОВКА СПИСКА К ВЫВОДУ */
 $lAdmin->AddHeaders([

@@ -127,15 +127,4 @@ class Api
             return $result->getId(); // id
         } else return false;
     }
-
-    public static function GetList($arFilter = [], $arSort = ['ID' => 'ASC'], $bShowAll = false)
-    {
-        $dbResult = Recaptchav3Table::getList([
-            'select' => ['*'],
-            'order' => $arSort,
-            'filter' => $arFilter
-        ]);
-
-        return $dbResult;
-    }
 }
