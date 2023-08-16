@@ -1,4 +1,4 @@
-<?
+<?php
 namespace ReCaptcha\V3;
 
 use \Bitrix\Main\Config\Option;

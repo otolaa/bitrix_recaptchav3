@@ -1,4 +1,4 @@
-<?
+<?php
 use \Bitrix\Main\Localization\Loc;
 use \Bitrix\Main\Loader;
 use \Bitrix\Main\Config\Option;
@@ -7,13 +7,13 @@ loc::loadMessages(__FILE__);
 
 Class recaptcha_v3 extends CModule
 {
-    var $MODULE_ID = "recaptcha.v3";
-    var $MODULE_VERSION;
-    var $MODULE_VERSION_DATE;
-    var $MODULE_NAME;
-    var $MODULE_DESCRIPTION;
-    var $PARTNER_NAME;
-    var $PARTNER_URI;
+    public $MODULE_ID = "recaptcha.v3";
+    public $MODULE_VERSION;
+    public $MODULE_VERSION_DATE;
+    public $MODULE_NAME;
+    public $MODULE_DESCRIPTION;
+    public $PARTNER_NAME;
+    public $PARTNER_URI;
 
     public function __construct()
     {
@@ -23,13 +23,18 @@ Class recaptcha_v3 extends CModule
         $this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
         $this->MODULE_NAME = Loc::getMessage("v3_module_name");
         $this->MODULE_DESCRIPTION = Loc::getMessage("v3_module_desc");
-        $this->PARTNER_NAME = 'saitovik';
-        $this->PARTNER_URI = 'http://saitovik.com';
+        $this->PARTNER_NAME = 'Alex Noodles';
+        $this->PARTNER_URI = '//github.com/otolaa/bitrix_recaptchav3';
     }
 
     public function getPageLocal($page)
     {
         return str_replace('index.php', $page, Loader::getLocal('modules/'.$this->MODULE_ID.'/install/index.php'));
+    }
+
+    public function getStringText($obj)
+    {
+        return is_array($obj)?implode('<br>', $obj):$obj;
     }
 
     public function InstallDB($arParams = array())
@@ -53,7 +58,7 @@ Class recaptcha_v3 extends CModule
 
 
         if($this->errors !== false) {
-            $APPLICATION->ThrowException(implode("<br>", $this->errors));
+            $APPLICATION->ThrowException($this->getStringText($this->errors));
             return false;
         } else {
             return true;
@@ -70,7 +75,7 @@ Class recaptcha_v3 extends CModule
         }
 
         if($this->errors !== false) {
-            $APPLICATION->ThrowException(implode("<br>", $this->errors));
+            $APPLICATION->ThrowException($this->getStringText($this->errors));
             return false;
         }
 
@@ -93,7 +98,7 @@ Class recaptcha_v3 extends CModule
 
     public function DoInstall()
     {
-        global $DOCUMENT_ROOT, $APPLICATION;
+        global $APPLICATION;
         // Install
         \Bitrix\Main\ModuleManager::registerModule($this->MODULE_ID);
         $this->InstallDB();
@@ -109,7 +114,7 @@ Class recaptcha_v3 extends CModule
 
     public function DoUninstall()
     {
-        global $DOCUMENT_ROOT, $APPLICATION;
+        global $APPLICATION;
         //
         \Bitrix\Main\ModuleManager::unRegisterModule($this->MODULE_ID);
         $this->UnInstallDB();
